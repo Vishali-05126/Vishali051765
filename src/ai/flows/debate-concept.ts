@@ -11,7 +11,7 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-export const DebateInputSchema = z.object({
+const DebateInputSchema = z.object({
   concept: z.string().describe('The concept to be debated.'),
   personas: z
     .array(z.string())
@@ -21,13 +21,13 @@ export const DebateInputSchema = z.object({
 });
 export type DebateInput = z.infer<typeof DebateInputSchema>;
 
-export const DebateTurnSchema = z.object({
+const DebateTurnSchema = z.object({
   persona: z.string().describe('The persona speaking.'),
   text: z.string().describe('The content of the speech.'),
 });
 export type DebateTurn = z.infer<typeof DebateTurnSchema>;
 
-export const DebateOutputSchema = z.array(DebateTurnSchema);
+const DebateOutputSchema = z.array(DebateTurnSchema);
 export type DebateOutput = z.infer<typeof DebateOutputSchema>;
 
 export async function debateConcept(input: DebateInput): Promise<DebateOutput> {
