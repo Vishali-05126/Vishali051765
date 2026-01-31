@@ -1,23 +1,23 @@
 'use server';
 /**
- * @fileOverview Orchestrates a collaborative explanation between multiple AI personas on a given concept.
+ * @fileOverview Orchestrates a debate between multiple AI personas on a given concept.
  *
- * - debateConcept - A function that handles the explanation generation.
+ * - debateConcept - A function that handles the debate generation.
  * - DebateInput - The input type for the debateConcept function.
  * - DebateOutput - The return type for the debateConcept function.
- * - DebateTurn - The type for a single turn in the explanation.
+ * - DebateTurn - The type for a single turn in the debate.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const DebateInputSchema = z.object({
-  concept: z.string().describe('The concept to be explained.'),
+  concept: z.string().describe('The concept to be debated.'),
   personas: z
     .array(z.string())
     .min(2)
     .max(3)
-    .describe('An array of 2 or 3 personas for the explanation.'),
+    .describe('An array of 2 or 3 personas for the debate.'),
 });
 export type DebateInput = z.infer<typeof DebateInputSchema>;
 
@@ -38,15 +38,13 @@ const debatePrompt = ai.definePrompt({
   name: 'debatePrompt',
   input: {schema: DebateInputSchema},
   output: {schema: DebateOutputSchema},
-  prompt: `You are a scriptwriter and educator. Your task is to write a detailed and comprehensive explanation of the concept '{{{concept}}}' from the perspective of several AI personas.
+  prompt: `You are a scriptwriter and educator. Your task is to write a short debate on the concept '{{{concept}}}' from the perspective of several AI personas.
 
 The personas are:
 {{#each personas}}- {{{this}}}
 {{/each}}
 
-The output should be a script where each persona takes a turn to explain a facet of the concept. The second persona should build on what the first said, and the third should build on the previous two, creating a single, cohesive, and thorough explanation.
-
-Instead of a short debate, the goal is a collaborative and deep explanation. Each persona's turn should be substantial, providing rich detail and clarity.
+The output should be a script where each persona takes a turn to state their position and respond to the others. The goal is to create a dynamic and engaging debate that explores different facets of the concept.
 
 Present the output as a JSON array of objects, where each object has a "persona" and "text" key.
 `,
@@ -63,7 +61,7 @@ const debateConceptFlow = ai.defineFlow(
     if (!output) {
       return input.personas.map(p => ({
         persona: p,
-        text: 'I am unable to participate in the explanation right now.',
+        text: 'I am unable to participate in the debate right now.',
       }));
     }
     return output;

@@ -103,7 +103,7 @@ export function MultiPersonaForm() {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
       <Card>
         <CardHeader>
-          <CardTitle>Get a Deep Explanation</CardTitle>
+          <CardTitle>Start a New Debate</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -113,7 +113,7 @@ export function MultiPersonaForm() {
                 name="concept"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Concept to Explain</FormLabel>
+                    <FormLabel>Concept to Debate</FormLabel>
                     <FormControl>
                       <Input placeholder="e.g., 'Quantum Entanglement'" {...field} />
                     </FormControl>
@@ -172,7 +172,7 @@ export function MultiPersonaForm() {
                 ) : (
                   <>
                     <Puzzle className="mr-2 h-4 w-4" />
-                    Get Explanation
+                    Start Debate
                   </>
                 )}
               </Button>
@@ -184,7 +184,7 @@ export function MultiPersonaForm() {
       {showResults && (
         <Card>
           <CardHeader>
-            <CardTitle>The Ensemble's Explanation</CardTitle>
+            <CardTitle>The Debate</CardTitle>
           </CardHeader>
           <CardContent>
             <Accordion type="single" collapsible className="w-full" defaultValue="item-0">
