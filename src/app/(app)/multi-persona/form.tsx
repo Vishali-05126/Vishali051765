@@ -39,7 +39,7 @@ export function MultiPersonaForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [personas, setPersonas] = useState({ p1: '', p2: '', p3: '' });
 
-  const [audioSrc, setAudioSrc] = useState('');
+  const [audioSrc, setAudioSrc] = useState<string | null>(null);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [loadingAudioId, setLoadingAudioId] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -80,7 +80,7 @@ export function MultiPersonaForm() {
     }
     setLoadingAudioId(id);
     setPlayingId(null);
-    setAudioSrc('');
+    setAudioSrc(null);
     try {
       const audioData = await textToSpeechAction(text);
       setAudioSrc(audioData);
@@ -104,7 +104,7 @@ export function MultiPersonaForm() {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
       <Card>
         <CardHeader>
-          <CardTitle>Assemble Your Learning Ensemble</CardTitle>
+          <CardTitle>Get a Deep Explanation</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -223,7 +223,7 @@ export function MultiPersonaForm() {
           </CardContent>
         </Card>
       )}
-      <audio ref={audioRef} src={audioSrc} onEnded={() => setPlayingId(null)} />
+      {audioSrc && <audio ref={audioRef} src={audioSrc} onEnded={() => setPlayingId(null)} />}
     </div>
   );
 }
