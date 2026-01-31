@@ -23,8 +23,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Pause, Puzzle, Users, Volume2 } from "lucide-react";
-import { explainConceptAction, textToSpeechAction } from "@/lib/actions";
+import { debateConceptAction, textToSpeechAction } from "@/lib/actions";
 import { Skeleton } from "@/components/ui/skeleton";
+import type { DebateTurn } from "@/ai/flows/debate-concept";
 
 const formSchema = z.object({
   concept: z.string().min(3, "Concept must be at least 3 characters."),
@@ -34,11 +35,9 @@ const formSchema = z.object({
 });
 
 export function MultiPersonaForm() {
-  const [explanation1, setExplanation1] = useState('');
-  const [explanation2, setExplanation2] = useState('');
-  const [explanation3, setExplanation3] = useState('');
-  const [personas, setPersonas] = useState({ p1: '', p2: '', p3: '' });
+  const [debate, setDebate] = useState<DebateTurn[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [personas, setPersonas] = useState({ p1: '', p2: '', p3: '' });
 
   const [audioSrc, setAudioSrc] = useState('');
   const [playingId, setPlayingId] = useState<string | null>(null);
@@ -57,17 +56,15 @@ export function MultiPersonaForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    setExplanation1('');
-    setExplanation2('');
-    setExplanation3('');
+    setDebate([]);
     setPersonas({ p1: values.persona1, p2: values.persona2, p3: values.persona3 });
 
     try {
-      await Promise.allSettled([
-        explainConceptAction({ concept: values.concept, persona: values.persona1 }).then(res => setExplanation1(res)),
-        explainConceptAction({ concept: values.concept, persona: values.persona2 }).then(res => setExplanation2(res)),
-        explainConceptAction({ concept: values.concept, persona: values.persona3 }).then(res => setExplanation3(res)),
-      ]);
+      const result = await debateConceptAction({
+        concept: values.concept,
+        personas: [values.persona1, values.persona2, values.persona3],
+      });
+      setDebate(result);
     } catch (error) {
       console.error(error);
     } finally {
@@ -100,8 +97,8 @@ export function MultiPersonaForm() {
       audioRef.current.play().catch(e => console.error("Audio play failed", e));
     }
   }, [audioSrc]);
-
-  const showResults = isLoading || explanation1 || explanation2 || explanation3;
+  
+  const showResults = isLoading || debate.length > 0;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
@@ -188,64 +185,40 @@ export function MultiPersonaForm() {
       {showResults && (
         <Card>
           <CardHeader>
-            <CardTitle>The Ensemble's Explanations</CardTitle>
+            <CardTitle>The Ensemble's Debate</CardTitle>
           </CardHeader>
           <CardContent>
-            <Accordion type="single" collapsible className="w-full" defaultValue="item-1">
-                <AccordionItem value="item-1">
-                  <AccordionTrigger>
-                    <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4" /> {personas.p1 || <Skeleton className="h-4 w-[150px]" />}
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="prose prose-sm dark:prose-invert max-w-none">
-                    {explanation1 ? (
+            <Accordion type="single" collapsible className="w-full" defaultValue="item-0">
+                {isLoading && debate.length === 0 && [personas.p1, personas.p2, personas.p3].filter(p=>p).map((p, index) => (
+                   <AccordionItem value={`item-${index}`} key={index}>
+                     <AccordionTrigger>
+                       <div className="flex items-center gap-2">
+                         <Users className="h-4 w-4" /> {p || <Skeleton className="h-4 w-[150px]" />}
+                       </div>
+                     </AccordionTrigger>
+                     <AccordionContent>
+                       <Skeleton className="h-20 w-full" />
+                     </AccordionContent>
+                   </AccordionItem>
+                ))}
+                {debate.map((turn, index) => (
+                  <AccordionItem value={`item-${index}`} key={index}>
+                    <AccordionTrigger>
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4" /> {turn.persona}
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="prose prose-sm dark:prose-invert max-w-none">
                       <div className="space-y-2">
-                        <p className="text-muted-foreground">{explanation1}</p>
-                        <Button variant="outline" size="sm" onClick={() => handlePlayAudio(explanation1, 'p1')} disabled={loadingAudioId === 'p1'}>
-                          {loadingAudioId === 'p1' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (playingId === 'p1' ? <Pause className="mr-2 h-4 w-4" /> : <Volume2 className="mr-2 h-4 w-4" />)}
-                          {playingId === 'p1' ? 'Pause' : 'Listen'}
+                        <p className="text-muted-foreground">{turn.text}</p>
+                        <Button variant="outline" size="sm" onClick={() => handlePlayAudio(turn.text, `p${index}`)} disabled={loadingAudioId === `p${index}`}>
+                          {loadingAudioId === `p${index}` ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (playingId === `p${index}` ? <Pause className="mr-2 h-4 w-4" /> : <Volume2 className="mr-2 h-4 w-4" />)}
+                          {playingId === `p${index}` ? 'Pause' : 'Listen'}
                         </Button>
                       </div>
-                    ) : <Skeleton className="h-20 w-full" />}
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-2">
-                  <AccordionTrigger>
-                    <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4" /> {personas.p2 || <Skeleton className="h-4 w-[200px]" />}
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="prose prose-sm dark:prose-invert max-w-none">
-                     {explanation2 ? (
-                      <div className="space-y-2">
-                        <p className="text-muted-foreground">{explanation2}</p>
-                         <Button variant="outline" size="sm" onClick={() => handlePlayAudio(explanation2, 'p2')} disabled={loadingAudioId === 'p2'}>
-                           {loadingAudioId === 'p2' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (playingId === 'p2' ? <Pause className="mr-2 h-4 w-4" /> : <Volume2 className="mr-2 h-4 w-4" />)}
-                           {playingId === 'p2' ? 'Pause' : 'Listen'}
-                         </Button>
-                      </div>
-                    ) : <Skeleton className="h-20 w-full" />}
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-3">
-                  <AccordionTrigger>
-                    <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4" /> {personas.p3 || <Skeleton className="h-4 w-[250px]" />}
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="prose prose-sm dark:prose-invert max-w-none">
-                     {explanation3 ? (
-                      <div className="space-y-2">
-                        <p className="text-muted-foreground">{explanation3}</p>
-                         <Button variant="outline" size="sm" onClick={() => handlePlayAudio(explanation3, 'p3')} disabled={loadingAudioId === 'p3'}>
-                           {loadingAudioId === 'p3' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (playingId === 'p3' ? <Pause className="mr-2 h-4 w-4" /> : <Volume2 className="mr-2 h-4 w-4" />)}
-                           {playingId === 'p3' ? 'Pause' : 'Listen'}
-                         </Button>
-                      </div>
-                    ) : <Skeleton className="h-20 w-full" />}
-                  </AccordionContent>
-                </AccordionItem>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
             </Accordion>
           </CardContent>
         </Card>

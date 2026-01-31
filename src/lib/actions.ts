@@ -1,26 +1,26 @@
-"use server";
+'use server';
 
 import {
   identifyAndInterveneOnLearningAntiPatterns,
   type IdentifyAndInterveneOnLearningAntiPatternsInput,
-} from "@/ai/flows/identify-and-intervene-on-learning-anti-patterns";
+} from '@/ai/flows/identify-and-intervene-on-learning-anti-patterns';
 import {
-  explainConcept,
-  type ExplainConceptInput,
-} from "@/ai/flows/explain-concept-from-multiple-angles";
+  debateConcept,
+  type DebateInput,
+} from '@/ai/flows/debate-concept';
 import {
   simulateFailureScenario,
   type SimulateFailureScenarioInput,
-} from "@/ai/flows/simulate-failure-scenario";
+} from '@/ai/flows/simulate-failure-scenario';
 import {
   predictKnowledgeGapsAndSuggestLearning,
   type PredictKnowledgeGapsAndSuggestLearningInput,
-} from "@/ai/flows/predict-knowledge-gaps-and-suggest-learning";
+} from '@/ai/flows/predict-knowledge-gaps-and-suggest-learning';
 import {
   reverseTeachConceptToAI,
   type ReverseTeachConceptToAIInput,
-} from "@/ai/flows/reverse-teach-concept-to-ai";
-import { textToSpeech } from "@/ai/flows/text-to-speech";
+} from '@/ai/flows/reverse-teach-concept-to-ai';
+import { textToSpeech } from '@/ai/flows/text-to-speech';
 
 export async function identifyAntiPatternsAction(
   input: IdentifyAndInterveneOnLearningAntiPatternsInput
@@ -28,10 +28,8 @@ export async function identifyAntiPatternsAction(
   return await identifyAndInterveneOnLearningAntiPatterns(input);
 }
 
-export async function explainConceptAction(
-  input: ExplainConceptInput
-) {
-  return await explainConcept(input);
+export async function debateConceptAction(input: DebateInput) {
+  return await debateConcept(input);
 }
 
 export async function simulateFailureAction(
