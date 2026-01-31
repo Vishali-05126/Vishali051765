@@ -24,8 +24,8 @@ export function Header() {
   const router = useRouter();
   // Mock user. In a real app, this would come from an auth hook.
   const user = {
-    name: "Synergistic User",
-    email: "user@example.com",
+    name: "Student",
+    email: "student@example.com",
   };
   const isLoggedIn = true; // Mock login state
 

@@ -9,7 +9,7 @@ export default function AntiPatternsPage() {
           <Balancer>Hyper-Personalized Anti-Patterns</Balancer>
         </h1>
         <p className="text-muted-foreground">
-          Let our AI identify your specific bad learning habits and provide personalized interventions.
+          Let our AI identify your specific learning habits through audio and interaction patterns, providing personalized interventions to help you learn more effectively.
         </p>
       </div>
       <AntiPatternsForm />

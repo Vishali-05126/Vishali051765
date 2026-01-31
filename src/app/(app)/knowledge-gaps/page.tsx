@@ -9,7 +9,7 @@ export default function KnowledgeGapsPage() {
           <Balancer>Predictive Knowledge Gaps</Balancer>
         </h1>
         <p className="text-muted-foreground">
-          Compare your current knowledge against your dream job requirements and get a roadmap to success.
+          Proactively prevent falling behind. Compare your current knowledge against your dream job requirements and get a roadmap to success.
         </p>
       </div>
       <KnowledgeGapsForm />

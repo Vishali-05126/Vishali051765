@@ -36,9 +36,9 @@ export default function LoginPage() {
         <CardHeader className="space-y-4 text-center">
             <Logo className="justify-center" />
             <div className="space-y-1">
-                <CardTitle className="text-2xl">Welcome Back</CardTitle>
+                <CardTitle className="text-2xl">Welcome to AxonAI</CardTitle>
                 <CardDescription>
-                Enter your credentials to access your account.
+                  The accessible learning platform for blind students.
                 </CardDescription>
             </div>
         </CardHeader>

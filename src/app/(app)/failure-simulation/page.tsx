@@ -9,7 +9,7 @@ export default function FailureSimulationPage() {
           <Balancer>Failure Simulation Playground</Balancer>
         </h1>
         <p className="text-muted-foreground">
-          Learn from mistakes in a safe environment. Let our AI create realistic scenarios for you to fail and grow.
+          Learn from mistakes in a safe, non-visual environment. Our AI creates realistic scenarios for you to experiment and grow, without any visual dependence.
         </p>
       </div>
       <FailureSimulationForm />

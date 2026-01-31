@@ -9,7 +9,7 @@ export default function MultiPersonaPage() {
           <Balancer>Multi-Persona Explanation</Balancer>
         </h1>
         <p className="text-muted-foreground">
-          Get a comprehensive explanation on any topic from multiple AI perspectives. Each persona builds on the last to give you a deep and rounded understanding.
+          Perfect for audio learning. Get a comprehensive explanation on any topic from multiple AI perspectives, delivered as a conversational debate you can listen to.
         </p>
       </div>
       <MultiPersonaForm />

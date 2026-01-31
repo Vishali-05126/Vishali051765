@@ -13,7 +13,7 @@ export default function SkillAncestryPage() {
           <Balancer>Skill Ancestry Display</Balancer>
         </h1>
         <p className="text-muted-foreground">
-          Visualize the evolutionary path of your skills and see how knowledge connects.
+          Visualize the evolutionary path of your skills. Our system can translate visual concepts into audio and tactile representations.
         </p>
       </div>
 

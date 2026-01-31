@@ -37,10 +37,10 @@ export default function DashboardPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
         <div className="relative p-8 md:p-12 flex flex-col gap-2 items-start">
             <h1 className="font-headline text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl text-foreground">
-              <Balancer>Synergistic Learning Accelerator</Balancer>
+              <Balancer>Accessible Neural Adaptive Learning</Balancer>
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl">
-              An AI-powered suite of tools designed to revolutionize your learning process, helping you understand complex topics, identify knowledge gaps, and conquer your goals.
+              Welcome to AxonAI. We reimagine each feature through the lens of non-visual learning, creating an education platform that's not just accessible, but optimally designed for blind learners.
             </p>
         </div>
       </div>

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
@@ -48,9 +47,9 @@ export function MultiPersonaForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       concept: "",
-      persona1: "A skeptical five-year-old",
-      persona2: "A philosophy professor from the 18th century",
-      persona3: "A futuristic AI from the year 3000",
+      persona1: "Dr. Optimist, an enthusiastic supporter",
+      persona2: "Professor Skeptic, who questions everything",
+      persona3: "Coach Pragmatist, focused on practical application",
     },
   });
 
