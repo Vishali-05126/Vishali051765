@@ -173,7 +173,7 @@ export function MultiPersonaForm() {
                 ) : (
                   <>
                     <Puzzle className="mr-2 h-4 w-4" />
-                    Start Debate
+                    Get Explanation
                   </>
                 )}
               </Button>
@@ -185,7 +185,7 @@ export function MultiPersonaForm() {
       {showResults && (
         <Card>
           <CardHeader>
-            <CardTitle>The Ensemble's Debate</CardTitle>
+            <CardTitle>The Ensemble's Explanation</CardTitle>
           </CardHeader>
           <CardContent>
             <Accordion type="single" collapsible className="w-full" defaultValue="item-0">
