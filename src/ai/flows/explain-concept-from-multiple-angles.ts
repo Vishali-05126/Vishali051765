@@ -1,77 +1,36 @@
 'use server';
 /**
- * @fileOverview Explains a concept from multiple perspectives using different AI personas.
+ * @fileOverview Explains a concept from a given persona's perspective.
  *
- * - explainConceptFromMultipleAngles - A function that explains a concept from multiple angles.
- * - ExplainConceptFromMultipleAnglesInput - The input type for the explainConceptFromMultipleAngles function.
- * - ExplainConceptFromMultipleAnglesOutput - The return type for the explainConceptFromMultipleAngles function.
+ * - explainConcept - A function that explains a concept from a single angle.
+ * - ExplainConceptInput - The input type for the explainConcept function.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-const ExplainConceptFromMultipleAnglesInputSchema = z.object({
+export const ExplainConceptInputSchema = z.object({
   concept: z.string().describe('The concept to explain.'),
-  persona1: z.string().describe('The first AI persona to explain the concept from.'),
-  persona2: z.string().describe('The second AI persona to explain the concept from.'),
-  persona3: z.string().describe('The third AI persona to explain the concept from.'),
+  persona: z.string().describe('The AI persona to explain the concept from.'),
 });
-export type ExplainConceptFromMultipleAnglesInput = z.infer<
-  typeof ExplainConceptFromMultipleAnglesInputSchema
->;
+export type ExplainConceptInput = z.infer<typeof ExplainConceptInputSchema>;
 
-const ExplainConceptFromMultipleAnglesOutputSchema = z.object({
-  explanation1: z.string().describe('The explanation from the first persona.'),
-  explanation2: z.string().describe('The explanation from the second persona.'),
-  explanation3: z.string().describe('The explanation from the third persona.'),
-});
-export type ExplainConceptFromMultipleAnglesOutput = z.infer<
-  typeof ExplainConceptFromMultipleAnglesOutputSchema
->;
-
-export async function explainConceptFromMultipleAngles(
-  input: ExplainConceptFromMultipleAnglesInput
-): Promise<ExplainConceptFromMultipleAnglesOutput> {
-  return explainConceptFromMultipleAnglesFlow(input);
+export async function explainConcept(
+  input: ExplainConceptInput
+): Promise<string> {
+  return explainConceptFlow(input);
 }
 
-const prompt = ai.definePrompt({
-  name: 'explainConceptFromMultipleAnglesPrompt',
-  input: {schema: ExplainConceptFromMultipleAnglesInputSchema},
-  output: {schema: ExplainConceptFromMultipleAnglesOutputSchema},
-  prompt: `You are an AI assistant that explains concepts from multiple perspectives.
-
-  Concept: {{{concept}}}
-
-  Explanation from {{{persona1}}}:
-  {{explanation1}}
-
-  Explanation from {{{persona2}}}:
-  {{explanation2}}
-
-  Explanation from {{{persona3}}}:
-  {{explanation3}}`,
-});
-
-const explainConceptFromMultipleAnglesFlow = ai.defineFlow(
+const explainConceptFlow = ai.defineFlow(
   {
-    name: 'explainConceptFromMultipleAnglesFlow',
-    inputSchema: ExplainConceptFromMultipleAnglesInputSchema,
-    outputSchema: ExplainConceptFromMultipleAnglesOutputSchema,
+    name: 'explainConceptFlow',
+    inputSchema: ExplainConceptInputSchema,
+    outputSchema: z.string(),
   },
   async input => {
-    const {output} = await prompt({
-      ...input,
-      explanation1: await ai.generate({
-        prompt: `Explain the concept of ${input.concept} from the perspective of ${input.persona1}.`,
-      }).then(r => r.text),
-      explanation2: await ai.generate({
-        prompt: `Explain the concept of ${input.concept} from the perspective of ${input.persona2}.`,
-      }).then(r => r.text),
-      explanation3: await ai.generate({
-        prompt: `Explain the concept of ${input.concept} from the perspective of ${input.persona3}.`,
-      }).then(r => r.text),
+    const res = await ai.generate({
+      prompt: `Explain the concept of '${input.concept}' from the perspective of ${input.persona}. Keep your explanation to a maximum of 3 sentences.`,
     });
-    return output!;
+    return res.text;
   }
 );

@@ -5,8 +5,8 @@ import {
   type IdentifyAndInterveneOnLearningAntiPatternsInput,
 } from "@/ai/flows/identify-and-intervene-on-learning-anti-patterns";
 import {
-  explainConceptFromMultipleAngles,
-  type ExplainConceptFromMultipleAnglesInput,
+  explainConcept,
+  type ExplainConceptInput,
 } from "@/ai/flows/explain-concept-from-multiple-angles";
 import {
   simulateFailureScenario,
@@ -20,8 +20,7 @@ import {
   reverseTeachConceptToAI,
   type ReverseTeachConceptToAIInput,
 } from "@/ai/flows/reverse-teach-concept-to-ai";
-import { z } from "zod";
-import { experimental_streamText } from "ai";
+import { textToSpeech } from "@/ai/flows/text-to-speech";
 
 export async function identifyAntiPatternsAction(
   input: IdentifyAndInterveneOnLearningAntiPatternsInput
@@ -30,9 +29,9 @@ export async function identifyAntiPatternsAction(
 }
 
 export async function explainConceptAction(
-  input: ExplainConceptFromMultipleAnglesInput
+  input: ExplainConceptInput
 ) {
-  return await explainConceptFromMultipleAngles(input);
+  return await explainConcept(input);
 }
 
 export async function simulateFailureAction(
@@ -49,4 +48,8 @@ export async function predictGapsAction(
 
 export async function reverseTeachAction(input: ReverseTeachConceptToAIInput) {
   return await reverseTeachConceptToAI(input);
+}
+
+export async function textToSpeechAction(text: string) {
+  return await textToSpeech(text);
 }

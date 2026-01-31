@@ -1,9 +1,7 @@
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Menu, UserCircle } from "lucide-react";
@@ -19,7 +17,7 @@ import {
 import { SidebarNav } from "./sidebar-nav";
 import { Logo } from "../logo";
 
-export function Header({ title }: { title: string }) {
+export function Header() {
   return (
     <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
       <Sheet>
@@ -39,7 +37,9 @@ export function Header({ title }: { title: string }) {
         </SheetContent>
       </Sheet>
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-        <h1 className="font-headline text-xl font-semibold">{title}</h1>
+        <div className="hidden md:flex">
+          <Logo />
+        </div>
         <div className="ml-auto flex-1 sm:flex-initial">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

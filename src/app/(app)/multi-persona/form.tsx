@@ -1,14 +1,13 @@
 
 "use client";
 
-import { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,9 +22,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, Puzzle, Sparkles, Users } from "lucide-react";
-import type { ExplainConceptFromMultipleAnglesOutput } from "@/ai/flows/explain-concept-from-multiple-angles";
-import { explainConceptAction } from "@/lib/actions";
+import { Loader2, Pause, Puzzle, Users, Volume2 } from "lucide-react";
+import { explainConceptAction, textToSpeechAction } from "@/lib/actions";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const formSchema = z.object({
@@ -36,9 +34,16 @@ const formSchema = z.object({
 });
 
 export function MultiPersonaForm() {
-  const [result, setResult] = useState<ExplainConceptFromMultipleAnglesOutput | null>(null);
+  const [explanation1, setExplanation1] = useState('');
+  const [explanation2, setExplanation2] = useState('');
+  const [explanation3, setExplanation3] = useState('');
   const [personas, setPersonas] = useState({ p1: '', p2: '', p3: '' });
   const [isLoading, setIsLoading] = useState(false);
+
+  const [audioSrc, setAudioSrc] = useState('');
+  const [playingId, setPlayingId] = useState<string | null>(null);
+  const [loadingAudioId, setLoadingAudioId] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,17 +57,51 @@ export function MultiPersonaForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    setResult(null);
+    setExplanation1('');
+    setExplanation2('');
+    setExplanation3('');
     setPersonas({ p1: values.persona1, p2: values.persona2, p3: values.persona3 });
+
     try {
-      const res = await explainConceptAction(values);
-      setResult(res);
+      await Promise.allSettled([
+        explainConceptAction({ concept: values.concept, persona: values.persona1 }).then(res => setExplanation1(res)),
+        explainConceptAction({ concept: values.concept, persona: values.persona2 }).then(res => setExplanation2(res)),
+        explainConceptAction({ concept: values.concept, persona: values.persona3 }).then(res => setExplanation3(res)),
+      ]);
     } catch (error) {
       console.error(error);
     } finally {
       setIsLoading(false);
     }
   }
+
+  const handlePlayAudio = async (text: string, id: string) => {
+    if (playingId === id && audioRef.current) {
+      audioRef.current.pause();
+      setPlayingId(null);
+      return;
+    }
+    setLoadingAudioId(id);
+    setPlayingId(null);
+    setAudioSrc('');
+    try {
+      const audioData = await textToSpeechAction(text);
+      setAudioSrc(audioData);
+      setPlayingId(id);
+    } catch (error) {
+      console.error("Failed to generate audio", error);
+    } finally {
+      setLoadingAudioId(null);
+    }
+  };
+
+  useEffect(() => {
+    if (audioSrc && audioRef.current) {
+      audioRef.current.play().catch(e => console.error("Audio play failed", e));
+    }
+  }, [audioSrc]);
+
+  const showResults = isLoading || explanation1 || explanation2 || explanation3;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
@@ -146,64 +185,72 @@ export function MultiPersonaForm() {
         </CardContent>
       </Card>
       
-      {(isLoading || result) && (
+      {showResults && (
         <Card>
           <CardHeader>
             <CardTitle>The Ensemble's Explanations</CardTitle>
           </CardHeader>
           <CardContent>
-            {isLoading ? (
-                <Accordion type="single" collapsible className="w-full" defaultValue="item-1">
-                    <AccordionItem value="item-1">
-                      <AccordionTrigger><Skeleton className="h-4 w-1/3" /></AccordionTrigger>
-                      <AccordionContent><Skeleton className="h-20 w-full" /></AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="item-2">
-                      <AccordionTrigger><Skeleton className="h-4 w-1/2" /></AccordionTrigger>
-                      <AccordionContent><Skeleton className="h-20 w-full" /></AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="item-3">
-                      <AccordionTrigger><Skeleton className="h-4 w-2/5" /></AccordionTrigger>
-                      <AccordionContent><Skeleton className="h-20 w-full" /></AccordionContent>
-                    </AccordionItem>
-                </Accordion>
-            ) : result && (
-              <Accordion type="single" collapsible className="w-full" defaultValue="item-1">
+            <Accordion type="single" collapsible className="w-full" defaultValue="item-1">
                 <AccordionItem value="item-1">
                   <AccordionTrigger>
                     <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4" /> {personas.p1}
+                      <Users className="h-4 w-4" /> {personas.p1 || <Skeleton className="h-4 w-[150px]" />}
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="prose prose-sm dark:prose-invert max-w-none">
-                    <p className="text-muted-foreground">{result.explanation1}</p>
+                    {explanation1 ? (
+                      <div className="space-y-2">
+                        <p className="text-muted-foreground">{explanation1}</p>
+                        <Button variant="outline" size="sm" onClick={() => handlePlayAudio(explanation1, 'p1')} disabled={loadingAudioId === 'p1'}>
+                          {loadingAudioId === 'p1' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (playingId === 'p1' ? <Pause className="mr-2 h-4 w-4" /> : <Volume2 className="mr-2 h-4 w-4" />)}
+                          {playingId === 'p1' ? 'Pause' : 'Listen'}
+                        </Button>
+                      </div>
+                    ) : <Skeleton className="h-20 w-full" />}
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-2">
                   <AccordionTrigger>
                     <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4" /> {personas.p2}
+                      <Users className="h-4 w-4" /> {personas.p2 || <Skeleton className="h-4 w-[200px]" />}
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="prose prose-sm dark:prose-invert max-w-none">
-                     <p className="text-muted-foreground">{result.explanation2}</p>
+                     {explanation2 ? (
+                      <div className="space-y-2">
+                        <p className="text-muted-foreground">{explanation2}</p>
+                         <Button variant="outline" size="sm" onClick={() => handlePlayAudio(explanation2, 'p2')} disabled={loadingAudioId === 'p2'}>
+                           {loadingAudioId === 'p2' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (playingId === 'p2' ? <Pause className="mr-2 h-4 w-4" /> : <Volume2 className="mr-2 h-4 w-4" />)}
+                           {playingId === 'p2' ? 'Pause' : 'Listen'}
+                         </Button>
+                      </div>
+                    ) : <Skeleton className="h-20 w-full" />}
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-3">
                   <AccordionTrigger>
                     <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4" /> {personas.p3}
+                      <Users className="h-4 w-4" /> {personas.p3 || <Skeleton className="h-4 w-[250px]" />}
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="prose prose-sm dark:prose-invert max-w-none">
-                     <p className="text-muted-foreground">{result.explanation3}</p>
+                     {explanation3 ? (
+                      <div className="space-y-2">
+                        <p className="text-muted-foreground">{explanation3}</p>
+                         <Button variant="outline" size="sm" onClick={() => handlePlayAudio(explanation3, 'p3')} disabled={loadingAudioId === 'p3'}>
+                           {loadingAudioId === 'p3' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (playingId === 'p3' ? <Pause className="mr-2 h-4 w-4" /> : <Volume2 className="mr-2 h-4 w-4" />)}
+                           {playingId === 'p3' ? 'Pause' : 'Listen'}
+                         </Button>
+                      </div>
+                    ) : <Skeleton className="h-20 w-full" />}
                   </AccordionContent>
                 </AccordionItem>
-              </Accordion>
-            )}
+            </Accordion>
           </CardContent>
         </Card>
       )}
+      <audio ref={audioRef} src={audioSrc} onEnded={() => setPlayingId(null)} />
     </div>
   );
 }
