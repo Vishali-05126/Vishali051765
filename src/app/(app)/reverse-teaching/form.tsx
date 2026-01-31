@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,9 +18,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, ArrowRightLeft, Sparkles } from "lucide-react";
+import { Loader2, ArrowRightLeft, Volume2, Pause } from "lucide-react";
 import type { ReverseTeachConceptToAIOutput } from "@/ai/flows/reverse-teach-concept-to-ai";
-import { reverseTeachAction } from "@/lib/actions";
+import { reverseTeachAction, textToSpeechAction } from "@/lib/actions";
 
 const formSchema = z.object({
   concept: z.string().min(3, "Concept must be at least 3 characters."),
@@ -30,6 +30,11 @@ const formSchema = z.object({
 export function ReverseTeachingForm() {
   const [result, setResult] = useState<ReverseTeachConceptToAIOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [audioSrc, setAudioSrc] = useState<string | null>(null);
+  const [playingId, setPlayingId] = useState<string | null>(null);
+  const [loadingAudioId, setLoadingAudioId] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -51,6 +56,32 @@ export function ReverseTeachingForm() {
       setIsLoading(false);
     }
   }
+
+  const handlePlayAudio = async (text: string, id: string) => {
+    if (playingId === id && audioRef.current) {
+      audioRef.current.pause();
+      setPlayingId(null);
+      return;
+    }
+    setLoadingAudioId(id);
+    setPlayingId(null);
+    setAudioSrc(null);
+    try {
+      const audioData = await textToSpeechAction(text);
+      setAudioSrc(audioData);
+      setPlayingId(id);
+    } catch (error) {
+      console.error("Failed to generate audio", error);
+    } finally {
+      setLoadingAudioId(null);
+    }
+  };
+
+  useEffect(() => {
+    if (audioSrc && audioRef.current) {
+      audioRef.current.play().catch(e => console.error("Audio play failed", e));
+    }
+  }, [audioSrc]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
@@ -141,19 +172,38 @@ export function ReverseTeachingForm() {
           <CardContent className="space-y-6">
             <div>
               <h3 className="font-semibold text-lg mb-2">AI's Understanding</h3>
-              <p className="text-muted-foreground">{result.aiUnderstanding}</p>
+              <div className="space-y-2">
+                <p className="text-muted-foreground">{result.aiUnderstanding}</p>
+                <Button variant="outline" size="sm" onClick={() => handlePlayAudio(result.aiUnderstanding, 'understanding')} disabled={loadingAudioId === 'understanding'}>
+                    {loadingAudioId === 'understanding' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (playingId === 'understanding' ? <Pause className="mr-2 h-4 w-4" /> : <Volume2 className="mr-2 h-4 w-4" />)}
+                    {playingId === 'understanding' ? 'Pause' : 'Listen'}
+                </Button>
+              </div>
             </div>
             <div>
               <h3 className="font-semibold text-lg mb-2">Questions for You</h3>
-              <p className="text-muted-foreground">{result.questionsForStudent}</p>
+              <div className="space-y-2">
+                <p className="text-muted-foreground">{result.questionsForStudent}</p>
+                 <Button variant="outline" size="sm" onClick={() => handlePlayAudio(result.questionsForStudent, 'questions')} disabled={loadingAudioId === 'questions'}>
+                    {loadingAudioId === 'questions' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (playingId === 'questions' ? <Pause className="mr-2 h-4 w-4" /> : <Volume2 className="mr-2 h-4 w-4" />)}
+                    {playingId === 'questions' ? 'Pause' : 'Listen'}
+                </Button>
+              </div>
             </div>
             <div>
               <h3 className="font-semibold text-lg mb-2">Identified Gaps</h3>
-              <p className="text-muted-foreground">{result.identifiedGaps}</p>
+              <div className="space-y-2">
+                <p className="text-muted-foreground">{result.identifiedGaps}</p>
+                <Button variant="outline" size="sm" onClick={() => handlePlayAudio(result.identifiedGaps, 'gaps')} disabled={loadingAudioId === 'gaps'}>
+                    {loadingAudioId === 'gaps' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (playingId === 'gaps' ? <Pause className="mr-2 h-4 w-4" /> : <Volume2 className="mr-2 h-4 w-4" />)}
+                    {playingId === 'gaps' ? 'Pause' : 'Listen'}
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
       )}
+      {audioSrc && <audio ref={audioRef} src={audioSrc} onEnded={() => setPlayingId(null)} />}
     </div>
   );
 }
