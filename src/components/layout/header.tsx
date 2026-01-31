@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Sheet,
   SheetContent,
@@ -16,8 +18,23 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SidebarNav } from "./sidebar-nav";
 import { Logo } from "../logo";
+import { useRouter } from "next/navigation";
 
 export function Header() {
+  const router = useRouter();
+  // Mock user. In a real app, this would come from an auth hook.
+  const user = {
+    name: "Synergistic User",
+    email: "user@example.com",
+  };
+  const isLoggedIn = true; // Mock login state
+
+  const handleLogout = () => {
+    // Mock logout. In a real app, you'd call a signout function.
+    // For now, we can just redirect to login.
+    router.push("/login");
+  };
+
   return (
     <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background/95 px-4 backdrop-blur-sm md:px-6">
       <Sheet>
@@ -37,7 +54,8 @@ export function Header() {
         </SheetContent>
       </Sheet>
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-        <div className="ml-auto flex-1 sm:flex-initial">
+        <div className="ml-auto flex-1 sm:flex-initial" />
+        {isLoggedIn ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" size="icon" className="rounded-full">
@@ -46,15 +64,24 @@ export function Header() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium leading-none">{user.name}</p>
+                  <p className="text-xs leading-none text-muted-foreground">
+                    {user.email}
+                  </p>
+                </div>
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
+        ) : (
+          <Button onClick={() => router.push('/login')}>Login</Button>
+        )}
       </div>
     </header>
   );
