@@ -47,9 +47,9 @@ export function MultiPersonaForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       concept: "",
-      persona1: "Dr. Optimist, an enthusiastic supporter",
-      persona2: "Professor Skeptic, who questions everything",
-      persona3: "Coach Pragmatist, focused on practical application",
+      persona1: "An expert in the field",
+      persona2: "A curious beginner",
+      persona3: "A skeptical critic",
     },
   });
 

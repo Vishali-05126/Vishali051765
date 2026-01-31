@@ -9,7 +9,7 @@ export default function MultiPersonaPage() {
           <Balancer>Multi-Persona Debate</Balancer>
         </h1>
         <p className="text-muted-foreground">
-          Perfect for audio learning. Hear different perspectives on any topic from multiple AI personas in a conversational debate you can listen to.
+          Hear different perspectives on any topic from multiple AI personas in a conversational debate you can listen to.
         </p>
       </div>
       <MultiPersonaForm />

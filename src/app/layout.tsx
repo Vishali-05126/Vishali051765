@@ -17,8 +17,8 @@ const sourceCodePro = Source_Code_Pro({
 });
 
 export const metadata: Metadata = {
-  title: "AxonAI for Blind Students",
-  description: "Accessible Neural Adaptive Learning: An AI-powered platform optimized for non-visual learning.",
+  title: "Synergistic Learning Accelerator",
+  description: "An AI-powered platform to accelerate learning.",
 };
 
 export default function RootLayout({
