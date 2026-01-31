@@ -1,0 +1,64 @@
+┌────────────────────┐
+│   LEARNER INPUT    │
+│ (Text / Voice /    │
+│  Interaction)      │
+└─────────┬──────────┘
+          │
+          ▼
+┌────────────────────┐
+│ BEHAVIOR CAPTURE   │
+│ - Typing Rhythm    │
+│ - Mouse Patterns   │
+│ - Voice Signals    │
+│ - Navigation Time  │
+└─────────┬──────────┘
+          │
+          ▼
+┌─────────────────────────┐
+│ COGNITIVE STATE ENGINE  │
+│ - Flow State Detection  │
+│ - Struggle Detection   │
+│ - Cognitive Load Est.  │
+└─────────┬───────────────┘
+          │
+          ▼
+┌─────────────────────────┐
+│ PREDICTIVE AI LAYER     │
+│ - Knowledge Gap Predict│
+│ - Mistake Forecasting  │
+│ - Skill Decay Analysis │
+└─────────┬───────────────┘
+          │
+          ▼
+┌─────────────────────────┐
+│ ADAPTIVE AI ORCHESTRATOR│
+│ - Difficulty Adjust    │
+│ - Reverse Teaching     │
+│ - Failure Simulation   │
+│ - Learning DNA Update  │
+└─────────┬───────────────┘
+          │
+          ▼
+┌─────────────────────────┐
+│ ACCESSIBILITY LAYER     │
+│ - Voice-Only Navigation│
+│ - Screen-Free Learning │
+│ - Audio Feedback       │
+└─────────┬───────────────┘
+          │
+          ▼
+┌─────────────────────────┐
+│ PERSONALIZED OUTPUT     │
+│ - Adapted Lesson       │
+│ - Voice Explanation    │
+│ - Visual / Audio Aids  │
+│ - Intervention Prompt │
+└─────────────────────────┘
+          │
+          ▼
+┌─────────────────────────┐
+│ CONTINUOUS LEARNING LOOP│
+│ - Learning DNA Evolves │
+│ - Model Improves       │
+│ - Future Prediction ↑  │
+└─────────────────────────┘
