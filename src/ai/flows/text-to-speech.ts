@@ -37,13 +37,13 @@ async function toWav(
   });
 }
 
-export const TextToSpeechInputSchema = z.object({
+const TextToSpeechInputSchema = z.object({
   text: z.string(),
   voice: z.string().default('Algenib'),
 });
 export type TextToSpeechInput = z.infer<typeof TextToSpeechInputSchema>;
 
-export const textToSpeechFlow = ai.defineFlow(
+const textToSpeechFlow = ai.defineFlow(
   {
     name: 'textToSpeechFlow',
     inputSchema: TextToSpeechInputSchema,
