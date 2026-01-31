@@ -19,7 +19,7 @@ import { Logo } from "../logo";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+    <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background/95 px-4 backdrop-blur-sm md:px-6">
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="shrink-0 md:hidden">
@@ -37,9 +37,6 @@ export function Header() {
         </SheetContent>
       </Sheet>
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-        <div className="hidden md:flex">
-          <Logo />
-        </div>
         <div className="ml-auto flex-1 sm:flex-initial">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

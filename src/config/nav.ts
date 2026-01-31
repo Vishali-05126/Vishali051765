@@ -20,6 +20,7 @@ export interface NavItem {
   icon: LucideIcon;
   color?: string;
   isChangelog?: boolean;
+  imageId?: string;
 }
 
 export const navItems: NavItem[] = [
@@ -32,30 +33,36 @@ export const navItems: NavItem[] = [
     title: "Reverse Teaching",
     href: "/reverse-teaching",
     icon: ArrowRightLeft,
+    imageId: "reverse-teaching-card",
   },
   {
     title: "Multi-Persona",
     href: "/multi-persona",
     icon: Puzzle,
+    imageId: "multi-persona-card",
   },
   {
     title: "Failure Simulation",
     href: "/failure-simulation",
     icon: ShieldAlert,
+    imageId: "failure-sim-card",
   },
   {
     title: "Knowledge Gaps",
     href: "/knowledge-gaps",
     icon: GraduationCap,
+    imageId: "gaps-card",
   },
   {
     title: "Anti-Patterns",
     href: "/anti-patterns",
     icon: HeartPulse,
+    imageId: "anti-patterns-card",
   },
   {
     title: "Skill Ancestry",
     href: "/skill-ancestry",
     icon: GitCommit,
+    imageId: "ancestry-card",
   },
 ];
