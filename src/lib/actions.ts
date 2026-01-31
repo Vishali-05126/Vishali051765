@@ -20,7 +20,9 @@ import {
   reverseTeachConceptToAI,
   type ReverseTeachConceptToAIInput,
 } from '@/ai/flows/reverse-teach-concept-to-ai';
-import { textToSpeech } from '@/ai/flows/text-to-speech';
+import { textToSpeech, type TextToSpeechInput } from '@/ai/flows/text-to-speech';
+import { summarizeText, type SummarizeTextInput } from '@/ai/flows/summarize-text';
+import { translateText, type TranslateTextInput } from '@/ai/flows/translate-text';
 
 export async function identifyAntiPatternsAction(
   input: IdentifyAndInterveneOnLearningAntiPatternsInput
@@ -48,6 +50,14 @@ export async function reverseTeachAction(input: ReverseTeachConceptToAIInput) {
   return await reverseTeachConceptToAI(input);
 }
 
-export async function textToSpeechAction(text: string) {
-  return await textToSpeech(text);
+export async function textToSpeechAction(input: TextToSpeechInput) {
+  return await textToSpeech(input);
+}
+
+export async function summarizeTextAction(input: SummarizeTextInput) {
+  return await summarizeText(input);
+}
+
+export async function translateTextAction(input: TranslateTextInput) {
+  return await translateText(input);
 }

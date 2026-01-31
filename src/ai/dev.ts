@@ -8,3 +8,5 @@ import '@/ai/flows/simulate-failure-scenario.ts';
 import '@/ai/flows/predict-knowledge-gaps-and-suggest-learning.ts';
 import '@/ai/flows/reverse-teach-concept-to-ai.ts';
 import '@/ai/flows/text-to-speech.ts';
+import '@/ai/flows/summarize-text.ts';
+import '@/ai/flows/translate-text.ts';

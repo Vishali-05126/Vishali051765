@@ -67,7 +67,7 @@ export function ReverseTeachingForm() {
     setPlayingId(null);
     setAudioSrc(null);
     try {
-      const audioData = await textToSpeechAction(text);
+      const audioData = await textToSpeechAction({ text });
       setAudioSrc(audioData);
       setPlayingId(id);
     } catch (error) {

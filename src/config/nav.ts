@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   Activity,
   ArrowRightLeft,
+  AudioWaveform,
   BrainCircuit,
   ClipboardList,
   Cpu,
@@ -58,6 +59,12 @@ export const navItems: NavItem[] = [
     href: "/anti-patterns",
     icon: HeartPulse,
     imageId: "anti-patterns-card",
+  },
+  {
+    title: "Assistive Reader",
+    href: "/assistive-reader",
+    icon: AudioWaveform,
+    imageId: "assistive-reader-card",
   },
   {
     title: "Skill Ancestry",

@@ -37,6 +37,12 @@
       "imageHint": "brain gears"
     },
     {
+      "id": "assistive-reader-card",
+      "description": "Sound waves moving across the screen",
+      "imageUrl": "https://images.unsplash.com/photo-1620986776192-2973b50a2560?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxhdWRpbyUyMHdhdmVzfGVufDB8fHx8MTc3MDA4MjM5MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "audio waves"
+    },
+    {
       "id": "ancestry-card",
       "description": "A large, branching tree",
       "imageUrl": "https://images.unsplash.com/photo-1591639903473-2d7250af207d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx0cmVlJTIwcm9vdHN8ZW58MHx8fHwxNzY5ODQ4NzA2fDA&ixlib=rb-4.1.0&q=80&w=1080",

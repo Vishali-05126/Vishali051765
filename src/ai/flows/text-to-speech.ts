@@ -1,8 +1,9 @@
 'use server';
 /**
- * @fileOverview Converts text to speech.
+ * @fileOverview Converts text to speech with voice selection.
  *
  * - textToSpeech - A function that converts text to speech.
+ * - TextToSpeechInput - The input type for the textToSpeech function.
  */
 
 import {ai} from '@/ai/genkit';
@@ -36,24 +37,30 @@ async function toWav(
   });
 }
 
+export const TextToSpeechInputSchema = z.object({
+  text: z.string(),
+  voice: z.string().default('Algenib'),
+});
+export type TextToSpeechInput = z.infer<typeof TextToSpeechInputSchema>;
+
 export const textToSpeechFlow = ai.defineFlow(
   {
     name: 'textToSpeechFlow',
-    inputSchema: z.string(),
+    inputSchema: TextToSpeechInputSchema,
     outputSchema: z.string(),
   },
-  async query => {
+  async ({text, voice}) => {
     const {media} = await ai.generate({
       model: 'googleai/gemini-2.5-flash-preview-tts',
       config: {
         responseModalities: ['AUDIO'],
         speechConfig: {
           voiceConfig: {
-            prebuiltVoiceConfig: {voiceName: 'Algenib'},
+            prebuiltVoiceConfig: {voiceName: voice},
           },
         },
       },
-      prompt: query,
+      prompt: text,
     });
     if (!media) {
       throw new Error('no media returned');
@@ -67,6 +74,6 @@ export const textToSpeechFlow = ai.defineFlow(
   }
 );
 
-export async function textToSpeech(text: string): Promise<string> {
-  return textToSpeechFlow(text);
+export async function textToSpeech(input: TextToSpeechInput): Promise<string> {
+  return textToSpeechFlow(input);
 }
