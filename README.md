@@ -1,6 +1,6 @@
 # 🧠 The Assistant That Acts Before You Ask
 
-An AI-powered learning assistant that proactively detects struggle, predicts knowledge gaps, and adapts learning in real time — with full **voice-first accessibility for blind and visually impaired learners**.
+An AI-powered learning assistant that proactively detects struggle, predicts knowledge gaps, and adapts learning in real time — with full **voice-first accessibility for blind,dumb and visually impaired learners**.
 
 ---
 
@@ -12,6 +12,7 @@ We wanted to build an assistant that **acts before failure happens**.
 Our inspiration came from two critical gaps:
 - Learners silently struggling without asking for help
 - Blind students being excluded by screen-dependent learning tools
+- For deaf and dumb students action based analysis using AI
 
 By combining **proactive AI intelligence** with a **voice-first assistant**, we enable every learner to study independently, without disturbance, and without waiting for help.
 
@@ -27,6 +28,7 @@ By combining **proactive AI intelligence** with a **voice-first assistant**, we 
 - Uses **reverse teaching** (student teaches the AI)
 - Simulates safe failure environments
 - Builds a personalized **Learning DNA** for every learner
+- builds a voice based analysis for deaf and dumb students to learn freely
 
 ---
 
@@ -80,15 +82,3 @@ All components are **privacy-aware, explainable, and demo-ready**.
 
 ---
 
-## 🔥 Why This Wins a Hackathon
-
-- **Innovative**: Proactive AI + Learning DNA + Reverse Teaching  
-- **Impactful**: Solves real learning and accessibility problems  
-- **Inclusive**: Blind students are first-class users  
-- **Executable**: Clear prototype, demo, and roadmap  
-
----
-
-## 📄 License
-
-This project is open-source and available for educational and research use.
